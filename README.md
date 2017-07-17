@@ -29,6 +29,8 @@ Object detection can be done in a multitude of different ways. For detecting spe
 | RGB                    | HSV                    | 
 | :--------------------: | :--------------------: |
 | ![rgb](images/rgb.png) | ![hsv](images/hsv.png) |
+
+
 Most people who have worked with computers know of the RGB color system, where each pixel is composed of values for Red, Green, and Blue. Each value has a range of 0 to 255, with 0 being the darkest and 255 being the brightest. More info can be found [here](https://en.wikipedia.org/wiki/RGB_color_model). However, you may not know about another color model called HSV, which stands for Hue, Saturation, and Value. This color model is more common in color pickers and editing software, but has various uses for computer vision applications as well. HSV is a cylindrial color model, and more info can be found [here](https://en.wikipedia.org/wiki/HSL_and_HSV). For this application, we use the HSV color system as a way to break the frames coming in from the camera into just the object we are trying to track. This is accomplished by setting the Hue value to the color of the object we are trying to track, then adjusting the Saturation and Value numbers in order to filter out the rest of the image, leaving us with the object we want to track. This process will be more explained in the section about how to use the application. 
 
 Since computers use the RGB color system, when we pull frames off the camera using OpenCV, they are in an RGB format (actually BGR, but its essentially the same). Thankfully, OpenCV makes moving between various color systems extremely easy. You will see lines of code like this
