@@ -162,7 +162,7 @@ After a bit of drawing, your frame looks like this.
 ![frame with drawing](images/drawing.png)
 
 But the underlying image just looks like this
-![glImg](images/glImg.png)
+![glImg](images/glimg.png)
 
 So how does this get overlayed with the frames from your camera?
 ### Overlay
