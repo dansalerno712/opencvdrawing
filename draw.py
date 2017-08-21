@@ -1,5 +1,6 @@
 import numpy as np
 import cv2
+import datetime
 
 #global vars for drawing stuff
 glLastCenter = None
@@ -32,16 +33,16 @@ def overlay(img1, img2):
     ret, mask = cv2.threshold(img2gray, 0, 255, cv2.THRESH_BINARY)
     mask_inv = cv2.bitwise_not(mask)
     
-    cv2.imshow('mask_inv', mask_inv)
+    #cv2.imshow('mask_inv', mask_inv)
 
     #black out the area of img2 in the roi
     img1_bg = cv2.bitwise_and(roi, roi, mask = mask_inv)
 
-    cv2.imshow('img1_bg', img1_bg)
+    #cv2.imshow('img1_bg', img1_bg)
     #get the filled in regions of img2
     img2_fg = cv2.bitwise_and(img2, img2, mask = mask)
 
-    cv2.imshow('img2_fg', img2_fg)
+    #cv2.imshow('img2_fg', img2_fg)
     #combine the fg and bg images
     dst = cv2.add(img1_bg, img2_fg)
     img1[0:rows, 0:cols] = dst
@@ -90,9 +91,12 @@ while(True):
     # get a frame from the camera
     ret, frame = cap.read()
 
+    #gauss blur
+    gauss = cv2.GaussianBlur(frame, (5, 5), 0)
+    
     # convert to hsv
-    hsv = cv2.cvtColor(frame, cv2.COLOR_BGR2HSV)
-
+    hsv = cv2.cvtColor(gauss, cv2.COLOR_BGR2HSV)
+    
     #get hsv values from the trackbars
     hue = cv2.getTrackbarPos('Hue', 'selector')
     saturation = cv2.getTrackbarPos('Saturation', 'selector')
@@ -167,7 +171,7 @@ while(True):
     if (glDrawing and glCurrentCenter != None and glLastCenter != None):
         cv2.line(glImg, glLastCenter, glCurrentCenter, (b, g, r), lineWidth)
     
-    cv2.imshow('glImg', glImg)
+    #cv2.imshow('glImg', glImg)
     #overlay the camera image and the drawn image
     final = overlay(frame, glImg)
 
@@ -185,13 +189,18 @@ while(True):
     cv2.imshow('selector', selectorImg)
 
     k = cv2.waitKey(1)
-
+    
     # if they press q, exit
     if k & 0xFF == ord('q'):
         break
     #if they press esc, clear the drawings
     elif k == 27:
         glImg = np.zeros((int(cap.get(4)),int(cap.get(3)), 3), np.uint8)
+    elif k == 0:
+        glDrawing = not glDrawing
+    elif k & 0xFF == ord('s'):
+        date = datetime.datetime.now().strftime("%Y-%m-%d-%H-%M-%S")
+        cv2.imwrite('images/screenshots/' + date + '.png', cv2.flip(final, 1))
 
 # release camera and close windows
 cap.release()
